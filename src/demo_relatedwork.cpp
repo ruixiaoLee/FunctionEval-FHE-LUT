@@ -1,4 +1,4 @@
-/* This is a demo for related work */
+/* This is a demo for related work [MMN22] */
 # include "openfhe.h"
 #include "ciphertext-ser.h"
 #include "cryptocontext-ser.h"
