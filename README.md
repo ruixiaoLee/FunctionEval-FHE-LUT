@@ -36,7 +36,7 @@ int64_t vSize = pow(2,n); // please change n to the bit lengths of input and out
 read_table("Table/128bit/one/vectorOfInLUT_one_n.txt"); \\ the path is like: Table/128bit/IndexLut or vectorOfInLUT or vectorOfOutLUT_the number of input_bit length. You can check the LUTs' name in directory Table
 ```
 2. To run the demo code, run the commands like below.<br>
-Please change the number of thread and code as you need. If you do not change, all codes test for 10-bit integers.
+Please change the number of thread and code as you need.
 ```
 OMP_NUM_THREADS=16 ./oneInput_funs_pt
 ```
