@@ -52,8 +52,6 @@ read_vector("Table/RelatedWork/relatedwork_in_d.txt"); \\ please change d to the
 ### Code construciton
 ```
 src  -- build
-     |_ Key # save keys
-     |_ Res # save results
      |_ Table # store LUTs
      |_ # source codes
        |_ CMakeList.ctxt
