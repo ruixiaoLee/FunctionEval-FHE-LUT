@@ -29,11 +29,12 @@ make
 ## How to use
 The LUTs are storing in `Table` file. Do not need to prepare again. (If you need to construct LUTs again, use `makeTable.py` and make the parts you need to be availabled.)
 
-1. Currently, you need to change the row size and table path by yourself. (The codes will be updated before publish.)
+1. Currently, you need to change the row size and table path by yourself. (The codes will be updated before publish.)<br>
+The paths are like below. You can find them in the code.
 ```
-int64_t vSize = pow(2,n); // please change n to the bit lengths of input and output
+int64_t vSize = pow(2,d); // please change d to the bit lengths of input and output
 ...
-read_table("Table/128bit/one/vectorOfInLUT_one_n.txt"); \\ the path is like: Table/128bit/IndexLut or vectorOfInLUT or vectorOfOutLUT_the number of input_bit length. You can check the LUTs' name in directory Table
+read_table("Table/128bit/one/vectorOfInLUT_m_d.txt"); \\ please change m to the number of inputs and d to the bit lengths of input and output
 ```
 2. To run the demo code, run the commands like below.<br>
 Please change the number of thread and code as you need.
