@@ -1,4 +1,4 @@
-# FunctionEval-FHE-LUT
+# FuncEvalFHELUT
 
 ## Contents
 - [Introduction](#introduction)
