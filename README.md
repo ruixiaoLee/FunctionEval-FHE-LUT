@@ -1,4 +1,4 @@
-# useOpenFHE
+# FunctionEval-FHE-LUT
 
 ## Contents
 - [Introduction](#introduction)
