@@ -103,7 +103,7 @@ int main() {
     keyPair = cryptoContext->KeyGen();
     cryptoContext->EvalMultKeyGen(keyPair.secretKey);
 
-    int64_t vSize = pow(2,1); // input table row size
+    int64_t vSize = pow(2,1); // input table row size /* change the bit here! */
 
     vector<int32_t> indexList;
     int64_t t = slots/vSize;
@@ -113,13 +113,13 @@ int main() {
     cryptoContext->EvalRotateKeyGen(keyPair.secretKey, indexList);
 /* set all paramenters */
    // read input/output LUT, input => plaintexts, output => plaintexts
-    vector<vector<int64_t>> vectorOfInLUT = read_table("Table/128bit/one/vectorOfInLUT_one_1.txt");
+    vector<vector<int64_t>> vectorOfInLUT = read_table("Table/128bit/one/vectorOfInLUT_one_1.txt");/* change the bit here! */
     vector<Plaintext> plaintextIns;
     for(size_t i=0 ; i<vectorOfInLUT.size() ; i++){
         Plaintext temp_pt = cryptoContext->MakePackedPlaintext(vectorOfInLUT[i]);
         plaintextIns.push_back(temp_pt);
     }
-    vector<vector<int64_t>> vectorOfOuts = read_table("Table/128bit/one/vectorOfOutLUT_one_1.txt");
+    vector<vector<int64_t>> vectorOfOuts = read_table("Table/128bit/one/vectorOfOutLUT_one_1.txt");/* change the bit here! */
     vector<Plaintext> plaintextOuts;
     for(size_t i=0 ; i<vectorOfOuts.size() ; i++){
         Plaintext temp_pt = cryptoContext->MakePackedPlaintext(vectorOfOuts[i]);

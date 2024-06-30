@@ -143,7 +143,7 @@ import math
 
 # =================== for related works ===== just a sample table ==========
 # ===The table sizes are the same as related work, but the content is random ===
-InputSize = pow(2,1) # number of slots set as 2^15=32768 # <= you need to change the bit length d
+InputSize = pow(2,2) # number of slots set as 2^15=32768 # <= you need to change the bit length d
 input_lut = []
 s = 0
 for i in range(0,InputSize):
@@ -157,8 +157,8 @@ for i in range(0,InputSize):
         coeff.append(y)
         y=y+1
 
-fi = open("build/Table/RelatedWork/relatedwork_in_1.txt","w") # <= you need to change the bit length d
-fc = open("build/Table/RelatedWork/relatedwork_coeff_1.txt","w") # <= you need to change the bit length d
+fi = open("build/Table/RelatedWork/relatedwork_in_2.txt","w") # <= you need to change the bit length d
+fc = open("build/Table/RelatedWork/relatedwork_coeff_2.txt","w") # <= you need to change the bit length d
 for i in range(0,InputSize):
     fi.write(str(input_lut[i])+' ')
     for j in range(0,InputSize):

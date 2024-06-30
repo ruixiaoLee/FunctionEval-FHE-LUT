@@ -3,7 +3,7 @@
 #include <chrono>
 #include "omp.h"
 #include <unistd.h>
-#define vSize pow(2,10)
+#define vSize pow(2,2)
 
 using namespace lbcrypto;
 using namespace std;
@@ -104,7 +104,7 @@ int main() {
     }
     cryptoContext->EvalRotateKeyGen(keyPair.secretKey, indexList);
 
-    vector<int64_t> vectorOfInLUT = read_vector("Table/RelatedWork/relatedwork_in_10.txt");
+    vector<int64_t> vectorOfInLUT = read_vector("Table/RelatedWork/relatedwork_in_2.txt");
     Plaintext ptOfInLUT= cryptoContext->MakePackedPlaintext(vectorOfInLUT);
 
     int64_t input_int0 = 2;
@@ -117,7 +117,7 @@ int main() {
     Plaintext plaintextInts1 = cryptoContext->MakePackedPlaintext(vectorOfInts1);
     auto ciphertextInts1 = cryptoContext->Encrypt(keyPair.publicKey, plaintextInts1);
 
-    vector<vector<int64_t>> coeff = read_table("Table/RelatedWork/relatedwork_coeff_10.txt");
+    vector<vector<int64_t>> coeff = read_table("Table/RelatedWork/relatedwork_coeff_2.txt");
     vector<Plaintext> coeff_pt;
     for(size_t i=0 ; i<coeff.size() ; i++){
         Plaintext temp_pt = cryptoContext->MakePackedPlaintext(coeff[i]);
@@ -137,10 +137,10 @@ int main() {
     cout<<"Finish to set pre-computed items"<<endl;
 
     vector<Ciphertext<DCRTPoly>> ctPowA, ctPowB;// ctPowA: Pow(input0, p), ctPowB: Pow(input1, p)
-   
+
     int64_t k = log2(vSize);
     // int64_t k = log2(ptMod);
-    
+
     for(int64_t i=0 ; i<=vSize ; i++){
       Ciphertext<DCRTPoly> temp;
       ctPowA.push_back(temp);
@@ -211,7 +211,7 @@ int main() {
     ctS = ciphertextZero;
     int w = vSize;
     #pragma omp parallel for
-    for(int i=0 ; i < w ; i++){ // Notice here! 
+    for(int i=0 ; i < w ; i++){ // Notice here!
         cout<<"No."<<i<<" ";
         auto tempA = ConstFun(ctPowA, vSize, coeff_pt, ciphertextZero, cryptoContext);
         auto tempB = ConstFun(ctPowB, vSize, coeff_pt, ciphertextZero, cryptoContext);
