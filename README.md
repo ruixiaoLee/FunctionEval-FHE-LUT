@@ -34,7 +34,7 @@ The paths are like below. You can find them in the code.
 ```
 int64_t vSize = pow(2,d); // please change d to the bit lengths of input and output
 ...
-read_table("Table/128bit/one/vectorOfInLUT_m_d.txt"); \\ please change m to the number of inputs and d to the bit lengths of input and output
+read_table("Table/128bit/one(/two/three)/vectorOfInLUT_m_d.txt"); \\ please change m to the number of inputs and d to the bit lengths of input and output.
 ```
 2. To run the demo code, run the commands like below.<br>
 Please change the number of thread and code as you need.
@@ -64,4 +64,26 @@ src  -- build
        |_ demo_relatedwork.cpp # related work [MMN22] test
        |_ demo_relatedwork2.cpp # related work [OCHK18] test
        |_ bitwise.cpp(bitwise_new.cpp) # naive bit-wise LUT test
+```
+
+### Test Examples
+One-input function
+```
+OMP_NUM_THREADS=1 ./oneInput_funs_pt
+```
+Two-input function
+```
+OMP_NUM_THREADS=1 ./twoInput_funs_pt
+```
+Three-input function
+```
+OMP_NUM_THREADS=1 ./threeInput_funs_pt
+```
+Bit-wise LUT
+```
+OMP_NUM_THREADS=1 ./bitwise(bitwise_new)
+```
+Related work
+```
+OMP_NUM_THREADS=1 ./demo_relatedwork(demo_relatedwork2)
 ```
