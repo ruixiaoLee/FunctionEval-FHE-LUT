@@ -1,16 +1,9 @@
-/* This is a demo for related work [MMN22] */
-# include "openfhe.h"
-#include "ciphertext-ser.h"
-#include "cryptocontext-ser.h"
-#include "key/key-ser.h"
-#include "scheme/bfvrns/bfvrns-ser.h"
-#include "scheme/bfvrns/cryptocontext-bfvrns.h"
-#include "scheme/bfvrns/gen-cryptocontext-bfvrns-internal.h"
-#include "scheme/cryptocontextparams-base.h"
+/* MNN22*/
+#include "openfhe.h"
 #include <chrono>
 #include "omp.h"
 #include <unistd.h>
-#define vSize pow(2,6) // <= you need to change the bit length d
+#define vSize pow(2,2)
 
 using namespace lbcrypto;
 using namespace std;
@@ -73,6 +66,16 @@ vector<vector <int64_t> > read_table(const string &filename){
   return table;
 }
 
+void show_memory_usage(pid_t pid){
+  ostringstream path;
+  path << "/proc/" << pid << "/status";
+  ostringstream cmd;
+  cmd << "grep -e 'VmHWM' -e 'VmRSS' -e 'VmSize' -e 'VmStk' -e 'VmData' -e 'VmExe' " << path.str();
+  [[maybe_unused]]
+  int k = system(cmd.str().c_str());
+  return;
+}
+
 int main() {
     // Step 1: Set CryptoContext
     CCParams<CryptoContextBFVRNS> parameters;
@@ -119,7 +122,7 @@ int main() {
     cryptoContext->InsertEvalAutomorphismKey(cryptoContext->EvalAutomorphismKeyGen(keyPair.secretKey, indexList));
 
 
-    vector<int64_t> vectorOfInLUT = read_vector("Table/RelatedWork/relatedwork_in_6.txt"); // <= you need to change the bit length d
+    vector<int64_t> vectorOfInLUT = read_vector("Table/RelatedWork/relatedwork_in_2.txt");
     Plaintext ptOfInLUT= cryptoContext->MakePackedPlaintext(vectorOfInLUT);
 
     int64_t input_int0 = 2;
@@ -132,7 +135,7 @@ int main() {
     Plaintext plaintextInts1 = cryptoContext->MakePackedPlaintext(vectorOfInts1);
     auto ciphertextInts1 = cryptoContext->Encrypt(keyPair.publicKey, plaintextInts1);
 
-    vector<vector<int64_t>> coeff = read_table("Table/RelatedWork/relatedwork_coeff_6.txt"); // <= you need to change the bit length d
+    vector<vector<int64_t>> coeff = read_table("Table/RelatedWork/relatedwork_coeff_2.txt");
     vector<Plaintext> coeff_pt;
     for(size_t i=0 ; i<coeff.size() ; i++){
         Plaintext temp_pt = cryptoContext->MakePackedPlaintext(coeff[i]);
@@ -155,7 +158,7 @@ int main() {
     int64_t p = sqrt(vSize); // here, N=2^l=vSize here can only accept p as an integer which means p^2=vSize
     int64_t k = log2(p);
     cout<<"p=s="<<p<<", k="<<k<<endl;
-
+    
     for(int64_t i=0 ; i<=p ; i++){
       Ciphertext<DCRTPoly> temp;
       ctPowA.push_back(temp);
@@ -243,7 +246,7 @@ int main() {
 
     chrono::duration<double> diffWhole = endWhole-startWhole;
     cout << "Whole runtime is: " << diffWhole.count() << "s" << endl;
-
+    show_memory_usage(getpid());
     // Plaintext pt;
     // cryptoContext->Decrypt(keyPair.secretKey, ctS, &pt);
     // cout<<"The output vector is :"<<pt<<endl;

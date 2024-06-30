@@ -20,17 +20,12 @@ project(demo CXX)
 set(CMAKE_CXX_STANDARD 17)
 option( BUILD_STATIC "Set to ON to include static versions of the library" OFF)
 
-find_package(OpenFHE CONFIG REQUIRED)
-if (OpenFHE_FOUND)
-    message(STATUS "FOUND PACKAGE OpenFHE")
-    message(STATUS "OpenFHE Version: ${BASE_OPENFHE_VERSION}")
-    message(STATUS "OpenFHE installed as shared libraries: ${OpenFHE_SHARED}")
-    message(STATUS "OpenFHE include files location: ${OpenFHE_INCLUDE}")
-    message(STATUS "OpenFHE lib files location: ${OpenFHE_LIBDIR}")
-    message(STATUS "OpenFHE Native Backend size: ${OpenFHE_NATIVE_SIZE}")
-else()
-    message(FATAL_ERROR "PACKAGE OpenFHE NOT FOUND")
-endif ()
+find_package(OpenFHE)
+find_package(OpenMP REQUIRED)
+if(OpenMP_FOUND)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
 
 set( CMAKE_CXX_FLAGS ${OpenFHE_CXX_FLAGS} )
 
@@ -58,18 +53,16 @@ endif()
 ### EXAMPLE:
 ### add_executable( test demo-simple-example.cpp )
 
-# our method
+# FOR PRIMITIVE
+# add_executable( demo_runtime demo_runtime.cpp )
+# add_executable( demo_runtime2 demo_runtime2.cpp )
+
+# FOR PROPOSED METHOD
 add_executable( oneInput_funs_pt oneInput_funs_pt.cpp )
 add_executable( twoInput_funs_pt twoInput_funs_pt.cpp )
 add_executable( threeInput_funs_pt threeInput_funs_pt.cpp )
 
-# related work
-add_executable( demo_relatedwork demo_relatedwork.cpp )
-add_executable( demo_relatedwork2 demo_relatedwork2.cpp )
-
-# primitive time
-add_executable( demo_runtime demo_runtime.cpp )
-
-# naive bit method
-add_executable( bitwise bitwise.cpp )
+# FOR RELATED WORKS
+# add_executable( demo_relatedwork demo_relatedwork.cpp )
+# add_executable( demo_relatedwork2 demo_relatedwork2.cpp )
 # add_executable( bitwise_new bitwise_new.cpp )

@@ -1,14 +1,9 @@
 /* This is a demo for 1-input functions */
 #include "openfhe.h"
-#include "ciphertext-ser.h"
-#include "cryptocontext-ser.h"
-#include "key/key-ser.h"
-#include "scheme/bfvrns/bfvrns-ser.h"
-#include "scheme/bfvrns/cryptocontext-bfvrns.h"
-#include "scheme/bfvrns/gen-cryptocontext-bfvrns-internal.h"
-#include "scheme/cryptocontextparams-base.h"
 #include <chrono>
 #include "omp.h"
+#include <unistd.h>
+#include <sys/types.h>
 
 using namespace lbcrypto;
 using namespace std;
@@ -66,6 +61,16 @@ vector<int64_t> fillSlot(vector<int64_t> vec, int64_t val, int64_t length, int64
   return vec;
 }
 
+void show_memory_usage(pid_t pid){
+  ostringstream path;
+  path << "/proc/" << pid << "/status";
+  ostringstream cmd;
+  cmd << "grep -e 'VmHWM' -e 'VmRSS' -e 'VmSize' -e 'VmStk' -e 'VmData' -e 'VmExe' " << path.str();
+  [[maybe_unused]]
+  int k = system(cmd.str().c_str());
+  return;
+}
+
 int main() {
     // Step 1: Set CryptoContext
     CCParams<CryptoContextBFVRNS> parameters;
@@ -98,8 +103,8 @@ int main() {
     keyPair = cryptoContext->KeyGen();
     cryptoContext->EvalMultKeyGen(keyPair.secretKey);
 
-    int64_t vSize = pow(2,6); // input table row size <= you need to change the bit length d
-                               // for 16-bit, please use pow(2,15) because the slot length is 15 bits
+    int64_t vSize = pow(2,1); // input table row size
+
     vector<int32_t> indexList;
     int64_t t = slots/vSize;
     for(int64_t i=0 ; i<log2(vSize); i++){
@@ -108,13 +113,13 @@ int main() {
     cryptoContext->EvalRotateKeyGen(keyPair.secretKey, indexList);
 /* set all paramenters */
    // read input/output LUT, input => plaintexts, output => plaintexts
-    vector<vector<int64_t>> vectorOfInLUT = read_table("Table/128bit/one/vectorOfInLUT_one_6.txt"); // <= you need to change the bit length d
+    vector<vector<int64_t>> vectorOfInLUT = read_table("Table/128bit/one/vectorOfInLUT_one_1.txt");
     vector<Plaintext> plaintextIns;
     for(size_t i=0 ; i<vectorOfInLUT.size() ; i++){
         Plaintext temp_pt = cryptoContext->MakePackedPlaintext(vectorOfInLUT[i]);
         plaintextIns.push_back(temp_pt);
     }
-    vector<vector<int64_t>> vectorOfOuts = read_table("Table/128bit/one/vectorOfOutLUT_one_6.txt"); // <= you need to change the bit length d
+    vector<vector<int64_t>> vectorOfOuts = read_table("Table/128bit/one/vectorOfOutLUT_one_1.txt");
     vector<Plaintext> plaintextOuts;
     for(size_t i=0 ; i<vectorOfOuts.size() ; i++){
         Plaintext temp_pt = cryptoContext->MakePackedPlaintext(vectorOfOuts[i]);
@@ -126,6 +131,7 @@ int main() {
      std::vector<int64_t> vectorOfInts0;
      vectorOfInts0 = fillSlot(vectorOfInts0, input_int0, slots, vSize);
      Plaintext plaintextInts0 = cryptoContext->MakePackedPlaintext(vectorOfInts0);
+    //  cout<<"input:"<<plaintextInts0<<endl;
      auto ciphertextInts0 = cryptoContext->Encrypt(keyPair.publicKey, plaintextInts0);
     // set all-one, plaintext
     std::vector<int64_t> vectorOfOne;
@@ -172,6 +178,6 @@ int main() {
 
     chrono::duration<double> diffWhole = endWhole-startWhole;
     cout << "Whole runtime is: " << diffWhole.count() << "s" << endl;
-
+    show_memory_usage(getpid());
     return 0;
 }

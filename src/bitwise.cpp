@@ -1,5 +1,5 @@
 /*
-  此处的差别在于lut的时候输入查找的结果的AND是直接自己写的还是用的库函数，区别是密文的noise(depth)不同，时间有差别么？
+  Example for the FHEW scheme LUT
  */
 
 #include "openfhe.h"
@@ -13,8 +13,8 @@ using namespace std;
 vector<LWECiphertext> bit_lut_parallel(vector<LWECiphertext> ctQuery, vector<LWECiphertext> ctRes, LWECiphertext ctZero, LWECiphertext ctOne, vector<vector<LWECiphertext> > ctTableInput,
                               vector<vector<LWECiphertext> > ctTableOutput, const BinFHEContext cc, size_t binarySize, size_t num){
     vector<vector<LWECiphertext> > interRes=ctTableOutput;
-    size_t inBinary = binarySize * num;
-    size_t w = pow(2,inBinary);
+    size_t inBinary = binarySize * num;   
+    size_t w = pow(2,inBinary);  
     #pragma omp parallel for
     for(size_t i=0 ; i<w ; i++){
       cout<<"i:"<<i<<endl;
@@ -41,31 +41,19 @@ vector<LWECiphertext> bit_lut_parallel(vector<LWECiphertext> ctQuery, vector<LWE
     return ctRes;
 }
 
-LWECiphertext BinAnd(size_t inBinary, vector<LWECiphertext> temp, const BinFHEContext cc, LWECiphertext ctOne){
-  if(inBinary==0 || inBinary==1){
-    return ctOne;
-  }
-  size_t half=inBinary/2;
-  auto left = BinAnd(half,temp,cc,ctOne);
-  auto right = BinAnd(inBinary-half,temp,cc,ctOne);
-  return cc.EvalBinGate(AND, left, right);
-}
-
 // use one thread
 vector<LWECiphertext> bit_lut(vector<LWECiphertext> ctQuery, vector<LWECiphertext> ctRes, LWECiphertext ctZero, LWECiphertext ctOne, vector<vector<LWECiphertext> > ctTableInput,
                               vector<vector<LWECiphertext> > ctTableOutput, const BinFHEContext cc, size_t binarySize, size_t num){
-    size_t inBinary = binarySize * num;
-    size_t w = pow(2,inBinary);
+    size_t inBinary = binarySize * num;   
+    size_t w = pow(2,inBinary);                 
     for(size_t i=0 ; i<w ; i++){
       cout<<"i:"<<i<<endl;
       auto tempBit = ctOne;
-      vector<LWECiphertext> tempV;
       for(size_t j=0 ; j<inBinary ; j++){
         auto temp = cc.EvalBinGate(XOR, ctQuery[j], ctTableInput[i][j]);
         temp = cc.EvalBinGate(XOR, temp, ctOne);
-        tempV.push_back(temp);
+        tempBit = cc.EvalBinGate(AND, tempBit, temp);
       }
-      tempBit = BinAnd(inBinary, tempV, cc, ctOne);
       for(size_t k=0 ; k<binarySize ; k++){
         auto temp2 = cc.EvalBinGate(AND, tempBit, ctTableOutput[i][k]);
         ctRes[k] = cc.EvalBinGate(XOR, ctRes[k], temp2);
@@ -113,7 +101,7 @@ int main() {
 
     size_t binarySize; //3bit:0~7
     size_t num;
-
+  
     cout<<"Give 1. the bit size, 2. the number of inputs: ";
     cin>>binarySize>>num;
     cout<<"Give input"<<endl;

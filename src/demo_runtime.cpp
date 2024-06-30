@@ -1,16 +1,5 @@
+/* This is a demo for: generate keys, save & load keys from a file, basic computations */
 #include "openfhe.h"
-#include "ciphertext-ser.h"
-#include "cryptocontext-ser.h"
-#include "key/key-ser.h"
-#include "scheme/bfvrns/bfvrns-ser.h"
-#include "scheme/bfvrns/cryptocontext-bfvrns.h"
-#include "scheme/bfvrns/gen-cryptocontext-bfvrns-internal.h"
-#include <chrono>
-#include "scheme/bfvrns/bfvrns-leveledshe.h"
-#include "scheme/bfvrns/bfvrns-cryptoparameters.h"
-#include "schemebase/base-scheme.h"
-#include "cryptocontext.h"
-#include "ciphertext.h"
 
 using namespace lbcrypto;
 using namespace std;
@@ -43,7 +32,7 @@ int main() {
   // parameters.SetMultiplicativeDepth(17);
   // parameters.SetSecurityLevel(HEStd_128_classic);
   parameters.SetPlaintextModulus(65537);
-  parameters.SetMultiplicativeDepth(1);
+  parameters.SetMultiplicativeDepth(19);
   // parameters.SetScalingModSize(60);
   parameters.SetSecurityLevel(HEStd_128_classic);
 
@@ -108,7 +97,7 @@ int main() {
   chrono::duration<double> Mul_sec =
           Mul_end_time - Mul_begin_time;
   double mul_result = Mul_sec.count();
-  std::cout<< mul_result/(times) <<std::endl;
+  std::cout<<"EvalMult ct*ct:"<<mul_result/(times) <<std::endl;
 
   // a+b ct1+ct2 => ct3
   auto Add_begin_time = chrono::high_resolution_clock::now();
@@ -119,7 +108,7 @@ int main() {
   chrono::duration<double> Add_sec =
           Add_end_time - Add_begin_time;
   double add_result=Add_sec.count();
-  std::cout<<add_result/(times)<<std::endl;
+  std::cout<<"EvalAdd ct+ct:"<<add_result/(times)<<std::endl;
 
   // a-b ct1-ct2 => ct3
   auto Sub_begin_time = chrono::high_resolution_clock::now();
@@ -130,33 +119,9 @@ int main() {
   chrono::duration<double> Sub_sec =
           Sub_end_time - Sub_begin_time;
   double sub_result = Sub_sec.count();
-  std::cout<<sub_result/(times) <<std::endl;
+  std::cout<<"EvalAddInPlace ct+ct:"<<sub_result/(times) <<std::endl;
 
   ///////////////// ct with pt
-  // a-b ct1*pt2 => ct3
-  auto Mul_begin_time2 = chrono::high_resolution_clock::now();
-  for(int i=0 ; i<times ; i++){
-    // ct8[i] = cryptoContext->EvalMult(ct2[i], pt2[i]);
-    cryptoContext->GetScheme()->EvalMultInPlace(ct6[i], pt2[i]);
-  }
-  auto Mul_end_time2 = chrono::high_resolution_clock::now();
-  chrono::duration<double> Mul_sec2 =
-          Mul_end_time2 - Mul_begin_time2;
-  double mul_result2 = Mul_sec2.count();
-  std::cout<< mul_result2/(times) <<std::endl;
-
-  // // a+b ct1+pt2 => ct3
-  auto Add_begin_time2 = chrono::high_resolution_clock::now();
-  for(int i=0; i<times;i++){
-    // ct6[i] = cryptoContext->EvalAdd(ct9[i], pt3[i]);
-    cryptoContext->GetScheme()->EvalAddInPlace(ct7[i], pt2[i]);
-  }
-  auto Add_end_time2 = chrono::high_resolution_clock::now();
-  chrono::duration<double> Add_sec2 =
-          Add_end_time2 - Add_begin_time2;
-  double add_result2 = Add_sec2.count();
-  std::cout<<add_result2/(times) <<std::endl;
-
   auto Mul_begin_time3 = chrono::high_resolution_clock::now();
   for(int i=0 ; i<times ; i++){
     ct8[i] = cryptoContext->EvalMult(ct1[i], pt2[i]);
@@ -166,7 +131,7 @@ int main() {
   chrono::duration<double> Mul_sec3 =
           Mul_end_time3 - Mul_begin_time3;
   double mul_result3 = Mul_sec3.count();
-  std::cout<< mul_result3/(times) <<std::endl;
+  std::cout<<"EvalMult ct*pt:"<<mul_result3/(times) <<std::endl;
 
   // // a+b ct1+pt2 => ct3
   auto Add_begin_time3 = chrono::high_resolution_clock::now();
@@ -178,7 +143,31 @@ int main() {
   chrono::duration<double> Add_sec3 =
           Add_end_time3 - Add_begin_time3;
   double add_result3 = Add_sec3.count();
-  std::cout<<add_result3/(times) <<std::endl;
+  std::cout<<"EvalAdd ct+pt:"<<add_result3/(times) <<std::endl;
+
+   // a-b ct1*pt2 => ct3
+  auto Mul_begin_time2 = chrono::high_resolution_clock::now();
+  for(int i=0 ; i<times ; i++){
+    // ct8[i] = cryptoContext->EvalMult(ct2[i], pt2[i]);
+    cryptoContext->GetScheme()->EvalMultInPlace(ct6[i], pt2[i]);
+  }
+  auto Mul_end_time2 = chrono::high_resolution_clock::now();
+  chrono::duration<double> Mul_sec2 =
+          Mul_end_time2 - Mul_begin_time2;
+  double mul_result2 = Mul_sec2.count();
+  std::cout<<"EvalMultInPlace ct*pt:"<<mul_result2/(times) <<std::endl;
+
+  // // a+b ct1+pt2 => ct3
+  auto Add_begin_time2 = chrono::high_resolution_clock::now();
+  for(int i=0; i<times;i++){
+    // ct6[i] = cryptoContext->EvalAdd(ct9[i], pt3[i]);
+    cryptoContext->GetScheme()->EvalAddInPlace(ct7[i], pt2[i]);
+  }
+  auto Add_end_time2 = chrono::high_resolution_clock::now();
+  chrono::duration<double> Add_sec2 =
+          Add_end_time2 - Add_begin_time2;
+  double add_result2 = Add_sec2.count();
+  std::cout<<"EvalAddInPlace ct+pt:"<<add_result2/(times) <<std::endl;
 
   return 0;
 }

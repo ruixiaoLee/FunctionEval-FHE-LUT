@@ -1,15 +1,9 @@
 /* This is a demo for 3-input functions */
 #include "openfhe.h"
-#include "ciphertext-ser.h"
-#include "cryptocontext-ser.h"
-#include "key/key-ser.h"
-#include "scheme/bfvrns/bfvrns-ser.h"
-#include "scheme/bfvrns/cryptocontext-bfvrns.h"
-#include "scheme/bfvrns/gen-cryptocontext-bfvrns-internal.h"
-#include "scheme/cryptocontextparams-base.h"
 #include <chrono>
 #include "omp.h"
 #include <unistd.h>
+#include <sys/types.h>
 #include <cstdlib>
 // input LUT default 1 row (if not 1 row, the indexList need to be changed)
 using namespace lbcrypto;
@@ -102,7 +96,7 @@ int main() {
     keyPair = cryptoContext->KeyGen();
     cryptoContext->EvalMultKeyGen(keyPair.secretKey);
 
-    size_t vSize = pow(2,6); // input table row size // <= you need to change the bit length d
+    size_t vSize = pow(2,6); // input table row size
 
     vector<int32_t> indexList;
     int64_t t = slots/vSize;
@@ -112,9 +106,9 @@ int main() {
     cryptoContext->EvalRotateKeyGen(keyPair.secretKey, indexList);
 /* set all paramenters */
     // read input/output LUT, input => plaintexts, output => ciphertexts
-    vector<vector<int64_t>> vectorOfInLUT = read_table("Table/128bit/three/vectorOfInLUT_three_6.txt"); // <= you need to change the bit length d
+    vector<vector<int64_t>> vectorOfInLUT = read_table("Table/128bit/three/vectorOfInLUT_three_6.txt");
     Plaintext plaintextIns = cryptoContext->MakePackedPlaintext(vectorOfInLUT[0]);
-    vector<vector<int64_t>> vectorOfOuts = read_table("Table/128bit/three/vectorOfOutLUT_three_6.txt"); // <= you need to change the bit length d
+    vector<vector<int64_t>> vectorOfOuts = read_table("Table/128bit/three/vectorOfOutLUT_three_6.txt");
     vector<Plaintext> plaintextOuts;
     for(size_t i=0 ; i<vectorOfOuts.size() ; i++){
       Plaintext temp_pt = cryptoContext->MakePackedPlaintext(vectorOfOuts[i]);
@@ -144,7 +138,7 @@ int main() {
     vectorOfOne = fillSlot(vectorOfOne, 1, slots, vSize);
     Plaintext plaintextOne = cryptoContext->MakePackedPlaintext(vectorOfOne);
 
-    std::vector<vector<int64_t> > IndexLut = read_table("Table/128bit/three/IndexLut_three_6.txt"); // <= you need to change the bit length d
+    std::vector<vector<int64_t> > IndexLut = read_table("Table/128bit/three/IndexLut_three_6.txt");
     vector<Plaintext> IndexLut_pt;
     for(size_t i=0 ; i<IndexLut.size() ; i++){
       IndexLut_pt.push_back(cryptoContext->MakePackedPlaintext(IndexLut[i]));
