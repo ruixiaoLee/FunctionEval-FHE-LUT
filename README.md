@@ -54,16 +54,21 @@ read_vector("Table/RelatedWork/relatedwork_in_d.txt"); \\ please change d to the
 ```
 src  -- build
      |_ Table # store LUTs
-     |_ # source codes
-       |_ CMakeList.ctxt
-       |_ makeTable.py # construct plaintext LUTs data
-       |_ oneInput_funs_pt.cpp # one-input function eval
-       |_ twoInput_funs_pt.cpp # two-input function eval
-       |_ threeInput_funs_pt.cpp # three-input function eval
-       |_ demo_runtime.cpp(demo_runtime2.cpp) # primitive runtime test
-       |_ demo_relatedwork.cpp # related work [MMN22] test
-       |_ demo_relatedwork2.cpp # related work [OCHK18] test
-       |_ bitwise.cpp(bitwise_new.cpp) # naive bit-wise LUT test
+       |_RelatedWork # all LUTs used in our experiments for related works
+       |_128bit
+         |_one   # all LUTs used in our experiments for one-input functions
+         |_two   # all LUTs used in our experiments for two-input functions
+         |_three # all LUTs used in our experiments for three-input functions
+        # source codes
+     |_ CMakeList.ctxt
+     |_ makeTable.py # construct plaintext LUTs data
+     |_ oneInput_funs_pt.cpp # one-input function eval
+     |_ twoInput_funs_pt.cpp # two-input function eval
+     |_ threeInput_funs_pt.cpp # three-input function eval
+     |_ demo_runtime.cpp(demo_runtime2.cpp) # primitive runtime test
+     |_ demo_relatedwork.cpp # related work [MMN22] test
+     |_ demo_relatedwork2.cpp # related work [OCHK18] test
+     |_ bitwise.cpp(bitwise_new.cpp) # naive bit-wise LUT test
 ```
 
 ### Test Examples
