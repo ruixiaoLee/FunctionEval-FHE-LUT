@@ -134,7 +134,7 @@ int main() {
      vectorOfOne = fillSlot(vectorOfOne, 1, slots, vSize);
      Plaintext plaintextOne = cryptoContext->MakePackedPlaintext(vectorOfOne);
 
-     std::vector<vector<int64_t> > IndexLut = read_table("Table/128bit/two/IndexLut_two_12.txt");
+     std::vector<vector<int64_t> > IndexLut = read_table("Table/128bit/two/IndexLut_two_2.txt");
      vector<Plaintext> IndexLut_pt;
      for(size_t i=0 ; i<IndexLut.size() ; i++){
        IndexLut_pt.push_back(cryptoContext->MakePackedPlaintext(IndexLut[i]));
